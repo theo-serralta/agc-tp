@@ -51,7 +51,7 @@ def isfile(path: str) -> Path:  # pragma: no cover
             msg = f"{myfile.name} is a directory."
         else:
             msg = f"{myfile.name} does not exist."
-        raise ArgumentTypeError(msg)
+        raise argparse.ArgumentTypeError(msg)
     return myfile
 
 
