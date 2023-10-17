@@ -19,6 +19,7 @@ import os
 import gzip
 import statistics
 import textwrap
+from pathlib import Path
 from collections import Counter
 # https://github.com/briney/nwalign3
 # ftp://ftp.ncbi.nih.gov/blast/matrices/
@@ -34,23 +35,30 @@ __email__ = "your@email.fr"
 __status__ = "Developpement"
 
 
-def isfile(path):
+
+def isfile(path: str) -> Path:  # pragma: no cover
     """Check if path is an existing file.
-      :Parameters:
-          path: Path to the file
+
+    :param path: (str) Path to the file
+
+    :raises ArgumentTypeError: If file does not exist
+
+    :return: (Path) Path object of the input file
     """
-    if not os.path.isfile(path):
-        if os.path.isdir(path):
-            msg = "{0} is a directory".format(path)
+    myfile = Path(path)
+    if not myfile.is_file():
+        if myfile.is_dir():
+            msg = f"{myfile.name} is a directory."
         else:
-            msg = "{0} does not exist.".format(path)
-        raise argparse.ArgumentTypeError(msg)
-    return path
+            msg = f"{myfile.name} does not exist."
+        raise ArgumentTypeError(msg)
+    return myfile
 
 
-def get_arguments():
+def get_arguments(): # pragma: no cover
     """Retrieves the arguments of the program.
-      Returns: An object that contains the arguments
+
+    :return: An object that contains the arguments
     """
     # Parsing arguments
     parser = argparse.ArgumentParser(description=__doc__, usage=
@@ -62,31 +70,59 @@ def get_arguments():
                         help="Minimum sequence length for dereplication (default 400)")
     parser.add_argument('-m', '-mincount', dest='mincount', type=int, default = 10,
                         help="Minimum count for dereplication  (default 10)")
-    parser.add_argument('-c', '-chunk_size', dest='chunk_size', type=int, default = 100,
-                        help="Chunk size for dereplication  (default 100)")
-    parser.add_argument('-k', '-kmer_size', dest='kmer_size', type=int, default = 8,
-                        help="kmer size for dereplication  (default 10)")
-    parser.add_argument('-o', '-output_file', dest='output_file', type=str,
+    parser.add_argument('-o', '-output_file', dest='output_file', type=Path,
                         default="OTU.fasta", help="Output file")
     return parser.parse_args()
 
-def read_fasta(amplicon_file, minseqlen):
+
+def read_fasta(amplicon_file: Path, minseqlen: int) -> str:
+    """Read a compressed fasta and extract all fasta sequences.
+
+    :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
+    :param minseqlen: (int) Minimum amplicon sequence length
+    :return: A generator object that provides the Fasta sequences (str).
+    """
     pass
 
 
-def dereplication_fulllength(amplicon_file, minseqlen, mincount):
+def dereplication_fulllength(amplicon_file: Path, minseqlen: int, mincount: int) -> list:
+    """Dereplicate the set of sequence
+
+    :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
+    :param minseqlen: (int) Minimum amplicon sequence length
+    :param mincount: (int) Minimum amplicon count
+    :return: A generator object that provides a (list)[sequences, count] of sequence with a count >= mincount and a length >= minseqlen.
+    """
     pass
 
-def get_identity(alignment_list):
-    """Prend en une liste de séquences alignées au format ["SE-QUENCE1", "SE-QUENCE2"]
-    Retourne le pourcentage d'identite entre les deux."""
+def get_identity(alignment_list: list) -> float:
+    """Compute the identity rate between two sequences
+
+    :param alignment_list:  (list) A list of aligned sequences in the format ["SE-QUENCE1", "SE-QUENCE2"]
+    :return: (float) The rate of identity between the two sequences.
+    """
     pass
 
-def abundance_greedy_clustering(amplicon_file, minseqlen, mincount, chunk_size, kmer_size):
+def abundance_greedy_clustering(amplicon_file: Path, minseqlen: int, mincount: int) -> list:
+    """Compute an abundance greedy clustering regarding sequence count and identity.
+    Identify OTU sequences.
+
+    :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
+    :param minseqlen: (int) Minimum amplicon sequence length.
+    :param mincount: (int) Minimum amplicon count.
+    :return: (list) A list of the [OTU (str), count (int)] .
+    """
     pass
 
-def write_OTU(OTU_list, output_file):
+
+def write_OTU(OTU_list: list, output_file: Path) -> None:
+    """Write the OTU sequence in fasta format.
+
+    :param OTU_list: (list) A list of OTU sequences
+    :param output_file: (Path) Path to the output file
+    """
     pass
+
 
 #==============================================================
 # Main program
@@ -99,36 +135,6 @@ def main():
     args = get_arguments()
     # Votre programme ici
 
-#==============================================================
-# Chimera removal section
-#==============================================================
-
-def get_unique(ids):
-    return {}.fromkeys(ids).keys()
-
-def common(lst1, lst2): 
-    return list(set(lst1) & set(lst2))
-
-def get_chunks(sequence, chunk_size):
-    """Split sequences in a least 4 chunks
-    """
-    pass
-
-def cut_kmer(sequence, kmer_size):
-    """Cut sequence into kmers"""
-    pass
-
-def get_unique_kmer(kmer_dict, sequence, id_seq, kmer_size):
-    pass
-
-def detect_chimera(perc_identity_matrix):
-    pass
-
-def search_mates(kmer_dict, sequence, kmer_size):
-    pass
-
-def chimera_removal(amplicon_file, minseqlen, mincount, chunk_size, kmer_size):
-    pass
 
 
 if __name__ == '__main__':
