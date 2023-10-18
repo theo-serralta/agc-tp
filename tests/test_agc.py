@@ -2,6 +2,7 @@
 import pytest
 import os
 import hashlib
+from pathlib import Path
 from .context import agc
 from agc import read_fasta
 from agc import dereplication_fulllength
@@ -12,7 +13,7 @@ from agc import write_OTU
 
 def test_read_fasta():
     """Test fasta reading"""
-    fasta_reader = read_fasta(os.path.abspath(os.path.join(os.path.dirname(__file__), "test_sequences.fasta.gz")), 200)
+    fasta_reader = read_fasta(Path(__file__).parent / "test_sequences.fasta.gz", 200)
     assert(next(fasta_reader) == 'TGGGGAATATTGCACAATGGGCGCAAGCCTGATGCAGCCATGCCGCGTGTATGAAGAAGGCCTTCGGGTTGTAAAGTACTTTCAGCGGGGAGGAAGGTGTTGTGGTTAATAACCGCAGCAATTGACGTTACCCGCAGAAGAAGCACCGGCTAACTCCGTGCCAGCAGCCGCGGTAATACGGAGGGTGCAAGCGTTAATCGGAATTACTGGGCGGAAAGCGCA')
     # Short sequences should be skipped
     assert(next(fasta_reader) == 'TAGGGAATCTTCCGCAATGGGCGAAAGCCTGACGGAGCAACGCCGCGTGAGTGATGAAGGTCTTCGGATCGTAAAACTCTGTTATTAGGGAAGAACATATGTGTAAGTAACTGTGCACATCTTGACGGTACCTAATCAGAAAGCCACGGCTAACTACGTGCCAGCAGCCGCGGTAATACGTAGGTGGCAAGCGTTATCCGGAATTATTGGGCGTACAGCGCG')
@@ -20,7 +21,7 @@ def test_read_fasta():
 
 def test_dereplication_fulllength():
     """Test dereplication fulllength"""
-    dereplication_reader =  dereplication_fulllength(os.path.abspath(os.path.join(os.path.dirname(__file__), "test_sequences.fasta.gz")), 200, 3)
+    dereplication_reader =  dereplication_fulllength(Path(__file__).parent / "test_sequences.fasta.gz", 200, 3)
     derep_1 = next(dereplication_reader)
     derep_2 = next(dereplication_reader)
     # Should be the most abundant sequence: seq4 counted 5 times
@@ -44,14 +45,14 @@ def test_get_identity():
     assert(round(idres,1) == 86.5)
 
 def test_abundance_greedy_clustering():
-    otu = abundance_greedy_clustering(os.path.abspath(os.path.join(os.path.dirname(__file__), "test_sequences.fasta.gz")),
-        200, 3)
+    otu = abundance_greedy_clustering(Path(__file__).parent / "test_sequences.fasta.gz",
+        200, 3, 50, 8)
     assert(otu[0][0] == "ACTACGGGGCGCAGCAGTAGGGAATCTTCCGCAATGGACGAAAGTCTGACGGAGCAACGCCGCGTGTATGAAGAAGGTTTTCGGATCGTAAAGTACTGTTGTTAGAGAAGAACAAGGATAAGAGTAACTGCTTGTCCCTTGACGGTATCTAACCAGAAAGCCACGGCTAACTACGTGCCAGCAGCCGCGGTAATACGTAGGTGGCAAGCGTTGTCCGGAGTTAGTGGGCGTAAAGCGCGCGCAGGCGGTCTTTTAAGTCTGATGTCAAAGCCCCCGGCTTAACCGGGGAGGGTCATTGGAAACTGGAAGACTGGAGTGCAGAAGAGGAGAGTGGAATTCCACGTGTAGCGGTGAAATGCGTAGATATGTGGAGGAACACCAGTGGCGAAGGCGACTCTCTGGTCTGTAACTGACGCTGAGGCGCGAAAGCGTGGGGAGCAAA")
     assert(otu[1][0] == "TAGGGAATCTTCCGCAATGGGCGAAAGCCTGACGGAGCAACGCCGCGTGAGTGATGAAGGTCTTCGGATCGTAAAACTCTGTTATTAGGGAAGAACATATGTGTAAGTAACTGTGCACATCTTGACGGTACCTAATCAGAAAGCCACGGCTAACTACGTGCCAGCAGCCGCGGTAATACGTAGGTGGCAAGCGTTATCCGGAATTATTGGGCGTACAGCGCG")
 
 
 def test_write_OTU():
-    test_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "test.fna"))
+    test_file = Path(__file__).parent / "test.fna"
     otu = [("TCAGCGAT", 8), ("TCAGCGAA",8), ("ACAGCGAT", 8), ("ACAGCGAA", 8)]
     write_OTU(otu, test_file)
     with open(test_file, 'rb') as otu_test:

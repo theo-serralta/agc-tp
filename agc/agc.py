@@ -21,6 +21,7 @@ import statistics
 import textwrap
 from pathlib import Path
 from collections import Counter
+from typing import Iterator, Dict, List
 # https://github.com/briney/nwalign3
 # ftp://ftp.ncbi.nih.gov/blast/matrices/
 import nwalign3 as nw
@@ -71,11 +72,11 @@ def get_arguments(): # pragma: no cover
     parser.add_argument('-m', '-mincount', dest='mincount', type=int, default = 10,
                         help="Minimum count for dereplication  (default 10)")
     parser.add_argument('-o', '-output_file', dest='output_file', type=Path,
-                        default="OTU.fasta", help="Output file")
+                        default=Path("OTU.fasta"), help="Output file")
     return parser.parse_args()
 
 
-def read_fasta(amplicon_file: Path, minseqlen: int) -> str:
+def read_fasta(amplicon_file: Path, minseqlen: int) -> Iterator[str]:
     """Read a compressed fasta and extract all fasta sequences.
 
     :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
@@ -85,7 +86,7 @@ def read_fasta(amplicon_file: Path, minseqlen: int) -> str:
     pass
 
 
-def dereplication_fulllength(amplicon_file: Path, minseqlen: int, mincount: int) -> list:
+def dereplication_fulllength(amplicon_file: Path, minseqlen: int, mincount: int) -> Iterator[List]:
     """Dereplicate the set of sequence
 
     :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
@@ -95,7 +96,7 @@ def dereplication_fulllength(amplicon_file: Path, minseqlen: int, mincount: int)
     """
     pass
 
-def get_identity(alignment_list: list) -> float:
+def get_identity(alignment_list: List[str]) -> float:
     """Compute the identity rate between two sequences
 
     :param alignment_list:  (list) A list of aligned sequences in the format ["SE-QUENCE1", "SE-QUENCE2"]
@@ -103,19 +104,21 @@ def get_identity(alignment_list: list) -> float:
     """
     pass
 
-def abundance_greedy_clustering(amplicon_file: Path, minseqlen: int, mincount: int) -> list:
+def abundance_greedy_clustering(amplicon_file: Path, minseqlen: int, mincount: int, chunk_size: int, kmer_size: int) -> List:
     """Compute an abundance greedy clustering regarding sequence count and identity.
     Identify OTU sequences.
 
     :param amplicon_file: (Path) Path to the amplicon file in FASTA.gz format.
     :param minseqlen: (int) Minimum amplicon sequence length.
     :param mincount: (int) Minimum amplicon count.
-    :return: (list) A list of the [OTU (str), count (int)] .
+    :param chunk_size: (int) A fournir mais non utilise cette annee
+    :param kmer_size: (int) A fournir mais non utilise cette annee
+    :return: (list) A list of all the [OTU (str), count (int)] .
     """
     pass
 
 
-def write_OTU(OTU_list: list, output_file: Path) -> None:
+def write_OTU(OTU_list: List, output_file: Path) -> None:
     """Write the OTU sequence in fasta format.
 
     :param OTU_list: (list) A list of OTU sequences
@@ -127,7 +130,7 @@ def write_OTU(OTU_list: list, output_file: Path) -> None:
 #==============================================================
 # Main program
 #==============================================================
-def main():
+def main(): # pragma: no cover
     """
     Main program function
     """
