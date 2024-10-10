@@ -195,8 +195,5 @@ def main():  # pragma: no cover
     write_OTU(otu_list, args.output_file)
     print(f"OTU sequences have been written to {args.output_file}")
 
-
-
-
 if __name__ == '__main__':
     main()
