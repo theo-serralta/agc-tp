@@ -175,13 +175,26 @@ def write_OTU(OTU_list: List, output_file: Path) -> None:
 #==============================================================
 # Main program
 #==============================================================
-def main(): # pragma: no cover
+def main():  # pragma: no cover
     """
     Main program function
     """
     # Get arguments
     args = get_arguments()
-    # Votre programme ici
+
+    # Étape 1 : Calculer les OTUs en utilisant le regroupement glouton
+    otu_list = abundance_greedy_clustering(
+        args.amplicon_file,
+        args.minseqlen,
+        args.mincount,
+        chunk_size=100, 
+        kmer_size=8
+    )
+
+    # Étape 2 : Écrire les OTUs dans le fichier de sortie
+    write_OTU(otu_list, args.output_file)
+    print(f"OTU sequences have been written to {args.output_file}")
+
 
 
 
