@@ -114,14 +114,18 @@ def dereplication_fulllength(amplicon_file: Path, minseqlen: int, mincount: int)
     for sequence, count in sequence_counter.most_common():
         if count >= mincount:
             yield [sequence, count]
-            
+
+
 def get_identity(alignment_list: List[str]) -> float:
     """Compute the identity rate between two sequences
 
     :param alignment_list:  (list) A list of aligned sequences in the format ["SE-QUENCE1", "SE-QUENCE2"]
     :return: (float) The rate of identity between the two sequences.
     """
-    pass
+    seq1, seq2 = alignment_list
+    matches = sum(1 for a, b in zip(seq1, seq2) if a == b)
+    identity = matches / len(seq1) * 100
+    return identity
 
 def abundance_greedy_clustering(amplicon_file: Path, minseqlen: int, mincount: int, chunk_size: int, kmer_size: int) -> List:
     """Compute an abundance greedy clustering regarding sequence count and identity.
