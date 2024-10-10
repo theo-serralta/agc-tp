@@ -164,8 +164,13 @@ def write_OTU(OTU_list: List, output_file: Path) -> None:
     :param OTU_list: (list) A list of OTU sequences
     :param output_file: (Path) Path to the output file
     """
-    pass
-
+    with open(output_file, "w") as file:
+        for i, (sequence, count) in enumerate(OTU_list, start=1):
+            # Write header with OTU number and occurrence count
+            file.write(f">OTU_{i} occurrence:{count}\n")
+            # Format sequence to 80 characters per line
+            formatted_sequence = textwrap.fill(sequence, width=80)
+            file.write(f"{formatted_sequence}\n")
 
 #==============================================================
 # Main program
